@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as readline from 'readline';
 
 main();
-
+//
 async function main() {
     let result = ''
     let LogList = await processLineByLine('E:\\work\\test.txt')
