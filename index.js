@@ -2,28 +2,31 @@ import * as fs from 'fs';
 import * as readline from 'readline';
 
 main();
-//
+
 async function main() {
     let result = ''
     let LogList = await processLineByLine('E:\\work\\test.txt')
-    let KeysObj = ObjKeysFromLogs(LogList)
+    let KeysArr = ArrKeysFromLogs(SetKeys(LogList))
 
-    result = ListToCsv(Object.keys(KeysObj)) + addValueToString(LogList, KeysObj)
+    result = ListToCsv(KeysArr) + addValueToString(LogList, KeysArr)
 
     await fs.promises.writeFile("E:\\work\\tabl.csv", result)
 }
 
-function addValueToString(ListLog, KeysObject) {
+function addValueToString(ListLog, KeysArr) {
     let allValueLogs = '';
 
     for (let log of ListLog) {
-        let cloneKeysObject = {}
-        Object.assign(cloneKeysObject, KeysObject)
+        let Values = []
 
-        for (let [key, value] of Object.entries(log)) {
-            cloneKeysObject[key] = value
+        for (let key of KeysArr) {
+            if (log[key] === undefined) {
+                Values.push('')
+            } else {
+                Values.push(log[key])
+            }
         }
-        allValueLogs += ListToCsv(Object.values(cloneKeysObject))
+        allValueLogs += ListToCsv(Values)
     }
     return allValueLogs
 }
@@ -33,18 +36,25 @@ function ListToCsv(list) {
     for (let value of list) {
         str += value + ','
     }
-    return str  + '\n'
+    return str + '\n'
 }
 
-function ObjKeysFromLogs(listLog){
-    let KeysObj = {}
-    for (let log of listLog) {
-        let keys = Object.keys(log);
-        for (let key of keys) {
-            KeysObj[key] = ''
+function ArrKeysFromLogs(SetKeys) {
+    let KeysArr = []
+    for (let key of SetKeys) {
+        KeysArr.push(key)
+    }
+    return KeysArr
+}
+
+function SetKeys(ListLog) {
+    let set = new Set()
+    for (let log of ListLog) {
+        for (let key of Object.keys(log)) {
+            set.add(key)
         }
     }
-    return KeysObj
+    return set
 }
 
 async function processLineByLine(Path) {
@@ -59,4 +69,3 @@ async function processLineByLine(Path) {
     }
     return a;
 }
-//LoveYouBro :D
