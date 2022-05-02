@@ -32,11 +32,7 @@ function addValueToString(ListLog, KeysArr) {
 }
 
 function ListToCsv(list) {
-    let str = ''
-    for (let value of list) {
-        str += value + ','
-    }
-    return str + '\n'
+    return list.join(',') + '\n'
 }
 
 function ArrKeysFromLogs(SetKeys) {
